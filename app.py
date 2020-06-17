@@ -1,10 +1,11 @@
 from flask import Flask, session, abort, url_for, redirect, request, render_template, redirect
-import logdb
+import logdb, random
 
 app = Flask(__name__)
 app.secret_key = b'aaa!111/'
 
-#메인 페이지 (로그인하기 전)
+######################로그인전(세션 x)########################
+#메인 페이지
 @app.route('/')
 def index():
     return render_template('main.html')
@@ -26,7 +27,7 @@ def method():
         if ret != None:
             session['users'] = id
             return '''<script>alert("로그인 성공!");
-        location.href="/sub"
+        location.href="/"
         </script>
         '''
 
@@ -47,13 +48,10 @@ def join():
         location.href="/"
         </script>
         '''
-     
-#서브 페이지(로그인을 한 후)
-@app.route('/sub')
-def sub():
-    return render_template("sub.html")
 
-#회원된 유저정보들(로그인된 유저들에 한에서)
+##################로그인을 할 시에(세션 o)##########################
+
+#회원된 유저정보들
 @app.route('/member')
 def member():
     if 'users' in session:
@@ -65,7 +63,56 @@ def member():
         location.href="/login"
         </script>
         '''
-   
+
+#게임
+@app.route("/startGame")
+def start():
+    if 'users' in session:
+        return render_template('game.html')
+    else:
+        return '''
+        <script>alert("로그인 후 이용해주세요!");
+        location.href="/login"
+        </script>
+        '''
+
+@app.route('/playGame', methods=['POST'])
+def play():
+    if request.method == 'POST':
+        name = request.form['suspect']
+        print(name)         #내가 지목한 범인 콘솔창에 출력
+        with open("static/save.txt","w",encoding='utf-8') as f:
+            f.write("%s" % (name))
+        return render_template('sure.html', data=name)
+
+@app.route("/image")
+def image():
+    return render_template('image.html')
+
+
+@app.route('/result')
+def result():
+    people = ['도둑', '경찰', '평민', '의사']
+    t_suspect = ("%s" % random.choice(people))
+
+    with open("static/test.txt","w",encoding='utf-8') as f:
+        f.write("%s" % t_suspect)
+    
+    with open("static/test.txt","r",encoding='utf-8') as file:      #진짜 범인 파일
+        result_suspect = file.read()
+
+    with open("static/save.txt", "r",encoding='utf-8') as file:     #내가 지목한 범인 파일
+        p_suspect = file.read()
+
+    print(t_suspect)        #콘솔창 진짜 범인 출력
+    
+    if result_suspect == p_suspect:
+        return render_template('image.html')
+    else:
+        return render_template('fail.html', data_1= t_suspect, data_2 = p_suspect)
+ 
+
+
 #로그 아웃(session 제거)
 @app.route('/logout')
 def logout():

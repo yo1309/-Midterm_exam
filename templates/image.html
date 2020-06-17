@@ -1,0 +1,12 @@
+{% extends "mainlayout.html" %} 
+{% block title %}메인 페이지{% endblock %}
+{% block head %} 
+    {{ super() }} 
+{% endblock %} 
+{% block content %}
+<h2>성 공</h2>
+보물과 범인을 찾으셨습니다!!<br>
+<img src={{ url_for('static', filename='img/hello.jpg') }} alt="Trulli" width='1500' height='900'>
+</body>
+</html>
+{% endblock %} 

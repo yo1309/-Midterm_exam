@@ -53,7 +53,8 @@ def select_users(id,pw):
         db.close()
         return ret
 
-create_table()
+#create_table()
+
 
 
 

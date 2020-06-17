@@ -1,0 +1,21 @@
+{% extends "mainlayout.html" %} 
+{% block title %}메인 페이지{% endblock %}
+{% block head %} 
+    {{ super() }} 
+{% endblock %} 
+{% block content %}
+<h2>보물 찾기 게임</h2>
+<p>4사람 중 보물을 누가 훔쳐 갔을까요??</p>
+<button>도둑</button>
+<button>경찰</button>
+<button>평민</button>
+<button>의사</button><br><br>
+
+<form action="/playGame" method = "POST">
+<label for="suspect">지목할 범인:</label>
+<input type="text" name="suspect"><br><br>
+<input type="submit" value="확인">
+{% endblock %}
+
+
+
